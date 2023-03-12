@@ -10,7 +10,7 @@ use super::{
     lib::{
         CalculationInput, DamageModifierResponse, ExplosivePercentResponse, ExtraDamageResponse,
         FiringModifierResponse, HandlingModifierResponse, InventoryModifierResponse,
-        MagazineModifierResponse, RangeModifierResponse, RefundResponse, ReloadModifierResponse,
+        MagazineModifierResponse, RangeModifierResponse, RefundResponse, ReloadModifierResponse, FlinchModifierResponse,
     },
 };
 
@@ -243,3 +243,92 @@ pub(super) fn dmr_weaken_debuffs(
         crit_scale: 1.0,
     }
 }
+
+pub(super) fn flmr_unflinching_mod(
+_input: &CalculationInput,
+_value: u32,
+_is_enhanced: bool,
+_pvp: bool,
+_cached_data: &mut HashMap<String, f64>,
+) -> FlinchModifierResponse {
+    if _value > 1 {
+        FlinchModifierResponse {   
+            flinch_scale: 0.7
+        }
+    } else if _value > 0 {
+        FlinchModifierResponse {
+            flinch_scale: 0.75
+        }
+    } else {
+        FlinchModifierResponse::default()
+    }
+}
+
+pub(super) fn sbr_rally_barricade(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+) -> HashMap<u32, i32> {
+    let mut stats = HashMap::new();
+    if _value > 0 {
+        stats.insert(StatHashes::STABILITY.into(), 30);
+        stats.insert(StatHashes::RELOAD.into(), 100);
+    }
+    stats
+}
+
+pub(super) fn flmr_rally_barricade(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+    ) -> FlinchModifierResponse {
+        if _value > 0 {
+            FlinchModifierResponse {
+                flinch_scale: 0.5
+            }
+         } else {
+            FlinchModifierResponse::default()
+        }
+    }
+
+pub(super) fn rsmr_rally_barricade(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+) -> ReloadModifierResponse {
+    if _value > 0 {
+        ReloadModifierResponse {
+            reload_stat_add: 100,
+            reload_time_scale: 0.9,
+        }
+    } else {
+        ReloadModifierResponse::default()
+    }
+}
+
+
+pub(super) fn rmr_rally_barricade(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+) -> RangeModifierResponse {
+    if _value > 0 {
+        RangeModifierResponse {
+            range_stat_add: 0,
+            range_all_scale: 1.1,
+            range_hip_scale: 1.0,
+            range_zoom_scale: 1.0,
+        } 
+    } else {
+        RangeModifierResponse::default()
+    }
+}
+

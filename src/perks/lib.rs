@@ -306,6 +306,17 @@ impl Default for InventoryModifierResponse {
 }
 
 #[derive(Debug, Clone)]
+pub struct FlinchModifierResponse{
+    pub flinch_scale: f64,
+}
+impl Default for FlinchModifierResponse{
+    fn default() -> Self {
+        Self {
+            flinch_scale: 1.0,
+        }
+    }
+}
+#[derive(Debug, Clone)]
 pub struct ReloadOverrideResponse {
     pub valid: bool,
     pub reload_time: f64,

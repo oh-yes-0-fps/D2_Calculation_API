@@ -7,7 +7,7 @@ use super::{
     lib::{
         CalculationInput, DamageModifierResponse, ExtraDamageResponse, FiringModifierResponse,
         HandlingModifierResponse, MagazineModifierResponse, RangeModifierResponse, RefundResponse,
-        ReloadModifierResponse, ReloadOverrideResponse,
+        ReloadModifierResponse, ReloadOverrideResponse, FlinchModifierResponse,
     },
 };
 
@@ -391,5 +391,21 @@ pub(super) fn hmr_suros_synergy(
         }
     } else {
         HandlingModifierResponse::default()
+    }
+}
+
+pub(super) fn flmr_suros_synergy(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>
+)-> FlinchModifierResponse {
+    if _value > 0 {
+        FlinchModifierResponse {
+            flinch_scale: 0.80,
+        }
+    } else {
+    FlinchModifierResponse::default()
     }
 }

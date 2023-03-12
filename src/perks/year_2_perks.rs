@@ -7,7 +7,7 @@ use super::{
     lib::{
         CalculationInput, DamageModifierResponse, ExplosivePercentResponse, ExtraDamageResponse,
         FiringModifierResponse, HandlingModifierResponse, MagazineModifierResponse,
-        RangeModifierResponse, RefundResponse, ReloadModifierResponse, ReloadOverrideResponse,
+        RangeModifierResponse, RefundResponse, ReloadModifierResponse, ReloadOverrideResponse, FlinchModifierResponse,
     },
 };
 
@@ -463,5 +463,22 @@ pub(super) fn hmr_eye_of_the_storm(
         }
     } else {
         HandlingModifierResponse::default()
+    }
+}
+
+pub(super) fn flmr_no_distractions(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>)
+    -> FlinchModifierResponse
+{
+    if _value > 0 {
+        FlinchModifierResponse  {
+            flinch_scale: 0.65,
+        }
+    } else {
+    FlinchModifierResponse::default()
     }
 }

@@ -10,7 +10,7 @@ use super::{
     lib::{
         CalculationInput, DamageModifierResponse, ExtraDamageResponse, FiringModifierResponse,
         HandlingModifierResponse, InventoryModifierResponse, MagazineModifierResponse,
-        RangeModifierResponse, RefundResponse, ReloadModifierResponse, ReloadOverrideResponse,
+        RangeModifierResponse, RefundResponse, ReloadModifierResponse, ReloadOverrideResponse,FlinchModifierResponse,
     },
 };
 
@@ -560,3 +560,33 @@ pub(super) fn fmr_assault_mag(
         FiringModifierResponse::default()
     }
 }
+
+pub(super) fn sbr_tome_of_dawn(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+) -> HashMap<u32, i32> {
+    let mut stats = HashMap::new();
+    if _value > 0 {
+        stats.insert(StatHashes::AIRBORNE.into(), 50);
+    }
+    stats
+}
+
+pub(super) fn flmr_tome_of_dawn(
+    _input: &CalculationInput,
+    _value: u32,
+    _is_enhanced: bool,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+    ) -> FlinchModifierResponse {
+        if _value > 0 {
+            FlinchModifierResponse {
+                flinch_scale: 0.80
+            }
+         } else {
+            FlinchModifierResponse::default()
+        }
+    }

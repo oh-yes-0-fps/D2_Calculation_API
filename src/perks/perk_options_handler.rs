@@ -73,6 +73,7 @@ fn hash_to_perk_option_data(_hash: u32) -> Option<PerkOptionData> {
         Perks::BuiltIn => None,
         Perks::EmpowermentBuffs => None,
         Perks::WeakenDebuffs => None,
+        
 
         //intrinsics
         Perks::RapidFireFrame => Some(PerkOptionData::static_()),
@@ -182,6 +183,7 @@ fn hash_to_perk_option_data(_hash: u32) -> Option<PerkOptionData> {
         Perks::UnderDog => Some(PerkOptionData::toggle()),
         Perks::ExplosiveLight => Some(PerkOptionData::toggle()),
         Perks::EyeOfTheStorm => Some(PerkOptionData::toggle()),
+        Perks::NoDistractions => Some(PerkOptionData::toggle()),
 
         //season 8 | year 3
         //TODO
@@ -314,6 +316,7 @@ fn hash_to_perk_option_data(_hash: u32) -> Option<PerkOptionData> {
         Perks::ReserveMod => Some(PerkOptionData::stacking(2)),
         Perks::LoaderMod => Some(PerkOptionData::stacking(2)),
         Perks::TargetingMod => Some(PerkOptionData::stacking(2)),
+        Perks::UnflinchingMod => Some(PerkOptionData::stacking(2)),
         Perks::QuickCharge => Some(PerkOptionData::toggle()),
         Perks::OnYourMark => Some(PerkOptionData::stacking(3)),
         Perks::Frequency => Some(PerkOptionData::toggle()),
@@ -322,7 +325,9 @@ fn hash_to_perk_option_data(_hash: u32) -> Option<PerkOptionData> {
         Perks::OphidianAspect => Some(PerkOptionData::toggle()),
         Perks::Hedrons => Some(PerkOptionData::toggle()),
         Perks::HeatRises => Some(PerkOptionData::toggle()),
+        Perks::RallyBarricade => Some(PerkOptionData::toggle()),
         Perks::FlowState => Some(PerkOptionData::toggle()),
+        Perks::TomeOfDawn => Some(PerkOptionData::toggle()),
         _ => None,
     }
 }

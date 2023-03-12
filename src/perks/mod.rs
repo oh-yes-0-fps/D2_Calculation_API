@@ -26,7 +26,7 @@ use self::{
         CalculationInput, DamageModifierResponse, ExplosivePercentResponse, ExtraDamageResponse,
         FiringModifierResponse, HandlingModifierResponse, InventoryModifierResponse,
         MagazineModifierResponse, RangeModifierResponse, RefundResponse, ReloadModifierResponse,
-        ReloadOverrideResponse,
+        ReloadOverrideResponse, FlinchModifierResponse,
     },
     meta_perks::*,
     origin_perks::*,
@@ -114,6 +114,7 @@ pub enum Perks {
     HotSwap,
     RightHook,
     KeepAway,
+    NoDistractions,
     //class
     Amplified,
     Tempering,
@@ -159,6 +160,7 @@ pub enum Perks {
     ReserveMod,
     TargetingMod,
     LoaderMod,
+    UnflinchingMod,
 
     ////STATIC////
     GutShot,
@@ -217,6 +219,7 @@ pub enum Perks {
     BuiltIn,
     EmpowermentBuffs,
     WeakenDebuffs,
+    RallyBarricade,
     ////////EXOTIC////////
     ////TOGGLE////
     CranialSpike,
@@ -225,6 +228,7 @@ pub enum Perks {
     OphidianAspect,
     DragonShadow,
     LunaFaction,
+    TomeOfDawn,
 
     ////SLIDER////
     RatPack,
@@ -292,6 +296,7 @@ impl From<u32> for Perks {
             0 => Perks::BuiltIn,
             222 => Perks::EmpowermentBuffs,
             333 => Perks::WeakenDebuffs,
+            444 => Perks::RallyBarricade,
 
             //intrinsics
             902 => Perks::RapidFireFrame,
@@ -301,10 +306,12 @@ impl From<u32> for Perks {
             222222222 => Perks::TargetingMod,
             333333333 => Perks::ReserveMod,
             444444444 => Perks::LoaderMod,
+            555555555 => Perks::UnflinchingMod,
             1484685884 => Perks::QuickCharge,
             593361144 => Perks::DragonShadow,
             1147638875 => Perks::OphidianAspect,
             3347978672 => Perks::LunaFaction,
+            926349160 => Perks::TomeOfDawn,
 
             //parts
             3796465595 => Perks::ImpactCasing,
@@ -421,6 +428,7 @@ impl From<u32> for Perks {
             205890336 => Perks::UnderDog,
             3194351027 => Perks::ExplosiveLight,
             699525795 => Perks::EyeOfTheStorm,
+            2866798147 => Perks::NoDistractions,
 
             //season 8 | year 3
             //TODO
@@ -686,6 +694,8 @@ fn dyanmic_perk_stats(
         Perks::HuntersTrance => sbr_hunters_trance(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::KeepAway => sbr_keep_away(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::FieldTested => sbr_field_tested(_input_data, val, enhanced, _pvp, _cached_data),
+        Perks::RallyBarricade => sbr_rally_barricade(_input_data, val, enhanced, _pvp, _cached_data),
+        Perks::TomeOfDawn => sbr_tome_of_dawn(_input_data, val, enhanced, _pvp, _cached_data),
         _ => HashMap::new(),
     }
 }
@@ -897,6 +907,7 @@ fn get_perk_rsmr(
         Perks::HuntersTrance => rsmr_hunters_trance(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::KeepAway => rsmr_keep_away(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::FieldTested => rsmr_field_tested(_input_data, val, enhanced, _pvp, _cached_data),
+        Perks::RallyBarricade => rsmr_rally_barricade(_input_data, val, enhanced, _pvp, _cached_data),
         _ => ReloadModifierResponse::default(),
     }
 }
@@ -1174,6 +1185,7 @@ fn get_perk_rmr(
         Perks::Adagio => rmr_adagio(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::HuntersTrance => rmr_hunters_trance(_input_data, val, enhanced, _pvp, _cached_data),
         Perks::FieldTested => rmr_field_tested(_input_data, val, enhanced, _pvp, _cached_data),
+        Perks::RallyBarricade => rmr_rally_barricade(_input_data, val, enhanced, _pvp, _cached_data),
         _ => RangeModifierResponse::default(),
     }
 }
@@ -1309,5 +1321,37 @@ fn get_perk_epr(
         }
         Perks::BuiltIn => epr_builtin(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
         _ => ExplosivePercentResponse::default(),
+    }
+}
+
+pub fn get_flinch_modifier(
+    _perks: Vec<Perk>,
+    _input_data: &CalculationInput,
+    _pvp: bool,
+    _cached_data: &mut HashMap<String, f64>,
+) -> FlinchModifierResponse {
+    let mut tmp = FlinchModifierResponse::default();
+    for perk in _perks{
+        tmp.flinch_scale *= get_perk_flmr(perk, _input_data, _pvp).flinch_scale;
+    }
+    tmp
+}
+
+fn get_perk_flmr(
+    _perk: Perk,
+    _input_data: &CalculationInput,
+    _pvp: bool,
+) -> FlinchModifierResponse{
+    let perk_enum = _perk.hash.into();
+    let val = _perk.value;
+    let enhanced = _perk.enhanced;
+    match perk_enum {
+        Perks::SurosSynergy => flmr_suros_synergy(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
+        Perks::NoDistractions => flmr_no_distractions(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
+        Perks::UnflinchingMod => flmr_unflinching_mod(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
+        Perks::RallyBarricade => flmr_rally_barricade(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
+        Perks::TomeOfDawn => flmr_tome_of_dawn(_input_data, val, enhanced, _pvp, &mut HashMap::new()),
+        //Perks::PerfectFloat => todo!(), //Perfect floats flinch resist value is unknown atm
+        _ => FlinchModifierResponse::default(),
     }
 }
